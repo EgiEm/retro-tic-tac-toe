@@ -1,0 +1,416 @@
+/* ============================================================
+   EGI'S NEON CYBERPUNK TIC-TAC-TOE — Style System
+   ============================================================ */
+
+/* ── Custom Theme Variables ────────────────────────────────── */
+:root {
+    --bg-color:        #05050c;
+    --panel-bg:        rgba(10, 10, 22, 0.8);
+    
+    /* Neon Colors */
+    --neon-cyan:       #00f2fe;
+    --neon-cyan-glow:  rgba(0, 242, 254, 0.6);
+    --neon-pink:       #ff007f;
+    --neon-pink-glow:  rgba(255, 0, 127, 0.6);
+    --neon-purple:     #9b5de5;
+    --neon-purple-glow:rgba(155, 93, 229, 0.4);
+    
+    --text-color:      #ffffff;
+    --text-dim:        #50507a;
+    
+    --border-color:    rgba(155, 93, 229, 0.25);
+    --border-glow:     rgba(155, 93, 229, 0.15);
+
+    --font-cyber:      'Segoe UI', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+    --font-mono:       'Courier New', Courier, monospace;
+}
+
+/* ── Reset & Body ──────────────────────────────────────────── */
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: var(--bg-color);
+    background-image: 
+        radial-gradient(circle at 50% 50%, rgba(15, 15, 35, 0.8) 0%, rgba(5, 5, 12, 1) 100%),
+        linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), 
+        linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+    background-size: 100% 100%, 100% 4px, 6px 100%;
+    color: var(--text-color);
+    font-family: var(--font-cyber);
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    user-select: none;
+}
+
+/* ── Container ─────────────────────────────────────────────── */
+#game-container {
+    position: relative;
+    width: 100%;
+    max-width: 480px;
+    height: 100vh;
+    max-height: 800px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid var(--border-color);
+    background: var(--panel-bg);
+    backdrop-filter: blur(15px);
+    border-radius: 16px;
+    box-shadow: 0 0 30px var(--border-glow), inset 0 0 15px rgba(155, 93, 229, 0.1);
+}
+
+/* ── HUD ───────────────────────────────────────────────────── */
+#hud {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    z-index: 10;
+}
+
+.hud-btn {
+    background: none;
+    border: 1px solid var(--border-color);
+    color: var(--text-dim);
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.hud-btn:hover {
+    color: var(--text-color);
+    border-color: var(--neon-purple);
+    box-shadow: 0 0 8px var(--neon-purple-glow);
+}
+
+#turn-indicator {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+}
+
+.turn-label {
+    font-size: 10px;
+    font-family: var(--font-mono);
+    color: var(--text-dim);
+    letter-spacing: 0.15em;
+}
+
+#active-turn {
+    font-size: 16px;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    text-shadow: 0 0 6px currentColor;
+    transition: color 0.3s ease;
+}
+
+.cyan-turn { color: var(--neon-cyan); }
+.pink-turn { color: var(--neon-pink); }
+
+/* ── Scoreboard ────────────────────────────────────────────── */
+#scoreboard {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 20px;
+    z-index: 10;
+}
+
+.score-card {
+    background: rgba(5, 5, 12, 0.6);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 8px 4px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    transition: all 0.3s ease;
+}
+
+.score-name {
+    font-size: 9px;
+    font-family: var(--font-mono);
+    color: var(--text-dim);
+    letter-spacing: 0.05em;
+}
+
+.score-val {
+    font-size: 20px;
+    font-weight: 800;
+    font-family: var(--font-mono);
+}
+
+/* Glow Borders for Cards */
+.cyan-glow { border-color: rgba(0, 242, 254, 0.3); }
+.cyan-glow .score-val { color: var(--neon-cyan); text-shadow: 0 0 8px var(--neon-cyan-glow); }
+.pink-glow { border-color: rgba(255, 0, 127, 0.3); }
+.pink-glow .score-val { color: var(--neon-pink); text-shadow: 0 0 8px var(--neon-pink-glow); }
+.draw-glow { border-color: rgba(155, 93, 229, 0.3); }
+.draw-glow .score-val { color: var(--neon-purple); text-shadow: 0 0 8px var(--neon-purple-glow); }
+
+/* ── Play Board Grid ───────────────────────────────────────── */
+#board-wrap {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    z-index: 10;
+}
+
+#board {
+    position: relative;
+    width: 320px;
+    height: 320px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    gap: 10px;
+}
+
+.cell {
+    background: rgba(15, 15, 30, 0.4);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    cursor: pointer;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.cell:hover {
+    background: rgba(155, 93, 229, 0.05);
+    border-color: var(--neon-purple);
+    box-shadow: 0 0 15px rgba(155, 93, 229, 0.25);
+    transform: scale(1.02);
+}
+
+/* X Character */
+.cell.x::before,
+.cell.x::after {
+    content: '';
+    position: absolute;
+    width: 8%;
+    height: 60%;
+    background-color: var(--neon-cyan);
+    border-radius: 4px;
+    box-shadow: 0 0 10px var(--neon-cyan), 0 0 20px var(--neon-cyan-glow);
+}
+.cell.x::before { transform: rotate(45deg); }
+.cell.x::after { transform: rotate(-45deg); }
+
+/* O Character */
+.cell.o::before {
+    content: '';
+    position: absolute;
+    width: 50%;
+    height: 50%;
+    border: 4px solid var(--neon-pink);
+    border-radius: 50%;
+    box-shadow: 0 0 10px var(--neon-pink), 0 0 20px var(--neon-pink-glow);
+}
+
+/* Winning SVG line overlay */
+#win-line-svg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 15;
+}
+
+#win-line {
+    stroke-width: 6px;
+    stroke-dasharray: 450;
+    stroke-dashoffset: 450;
+    animation: drawLine 0.5s ease-out forwards;
+}
+
+.win-cyan {
+    stroke: var(--neon-cyan);
+    filter: drop-shadow(0 0 8px var(--neon-cyan));
+}
+
+.win-pink {
+    stroke: var(--neon-pink);
+    filter: drop-shadow(0 0 8px var(--neon-pink));
+}
+
+@keyframes drawLine {
+    to { stroke-dashoffset: 0; }
+}
+
+/* ── Overlay Menus ─────────────────────────────────────────── */
+.overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(5, 5, 12, 0.95);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border-radius: 16px;
+    z-index: 100;
+    padding: 24px;
+    text-align: center;
+}
+
+.neon-text-title {
+    font-size: 32px;
+    font-weight: 900;
+    letter-spacing: 0.1em;
+    color: #fff;
+    text-shadow: 
+        0 0 10px var(--neon-purple), 
+        0 0 20px var(--neon-purple-glow);
+    margin-bottom: 8px;
+    animation: textPulse 2s infinite alternate;
+}
+
+.subtitle {
+    font-size: 11px;
+    font-family: var(--font-mono);
+    color: var(--text-dim);
+    letter-spacing: 0.25em;
+    margin-bottom: 40px;
+    text-transform: uppercase;
+}
+
+.menu-buttons,
+.result-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    width: 80%;
+    max-width: 280px;
+}
+
+/* ── Cyber Buttons ─────────────────────────────────────────── */
+.neon-btn {
+    position: relative;
+    padding: 14px 20px;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    border-radius: 8px;
+    cursor: pointer;
+    background: transparent;
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+.neon-btn.cyan-btn {
+    border: 1px solid var(--neon-cyan);
+    color: var(--neon-cyan);
+    box-shadow: 0 0 5px rgba(0, 242, 254, 0.2);
+}
+
+.neon-btn.cyan-btn:hover {
+    background: var(--neon-cyan);
+    color: var(--bg-color);
+    box-shadow: 0 0 20px var(--neon-cyan-glow);
+}
+
+.neon-btn.pink-btn {
+    border: 1px solid var(--neon-pink);
+    color: var(--neon-pink);
+    box-shadow: 0 0 5px rgba(255, 0, 127, 0.2);
+}
+
+.neon-btn.pink-btn:hover {
+    background: var(--neon-pink);
+    color: var(--bg-color);
+    box-shadow: 0 0 20px var(--neon-pink-glow);
+}
+
+.neon-btn.secondary-btn {
+    border: 1px solid var(--border-color);
+    color: var(--text-dim);
+}
+
+.neon-btn.secondary-btn:hover {
+    border-color: var(--neon-purple);
+    color: var(--text-color);
+    box-shadow: 0 0 10px var(--neon-purple-glow);
+}
+
+/* ── Glitch Deco & Animation ──────────────────────────────── */
+@keyframes textPulse {
+    0% {
+        text-shadow: 0 0 10px var(--neon-purple), 0 0 20px var(--neon-purple-glow);
+    }
+    100% {
+        text-shadow: 0 0 15px var(--neon-purple), 0 0 30px var(--neon-purple-glow), 0 0 40px var(--neon-purple);
+    }
+}
+
+.glow-decorations .corner {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    border-color: var(--neon-purple);
+    border-style: solid;
+    opacity: 0.5;
+}
+.corner.top-left { top: 20px; left: 20px; border-width: 2px 0 0 2px; }
+.corner.top-right { top: 20px; right: 20px; border-width: 2px 2px 0 0; }
+.corner.bottom-left { bottom: 20px; left: 20px; border-width: 0 0 2px 2px; }
+.corner.bottom-right { bottom: 20px; right: 20px; border-width: 0 2px 2px 0; }
+
+/* ── Utilities ────────────────────────────────────────────── */
+.hidden {
+    display: none !important;
+}
+.hud-btn svg {
+    display: block;
+}
+
+/* ── Match Win Dot Indicators ──────────────────────────────── */
+.match-dots {
+    display: flex;
+    gap: 6px;
+    margin-top: 6px;
+}
+
+.dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--text-dim);
+    border: 1px solid var(--border-color);
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.dot.active-cyan {
+    background: var(--neon-cyan);
+    border-color: var(--neon-cyan);
+    box-shadow: 0 0 6px var(--neon-cyan), 0 0 12px var(--neon-cyan-glow);
+}
+
+.dot.active-pink {
+    background: var(--neon-pink);
+    border-color: var(--neon-pink);
+    box-shadow: 0 0 6px var(--neon-pink), 0 0 12px var(--neon-pink-glow);
+}
