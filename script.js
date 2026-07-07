@@ -193,7 +193,7 @@ function updateSoundButton() {
 
 function startNextRound() {
     state.board.fill("");
-    state.currentPlayer = "X";
+    state.currentPlayer = state.gameMode === "ai" ? "O" : "X";
     state.isGameActive = true;
 
     // Reset UI
@@ -209,6 +209,11 @@ function startNextRound() {
 
     resultScreen.classList.add('hidden');
     updateTurnIndicator();
+
+    // Trigger AI first move if starting as O in AI mode
+    if (state.gameMode === "ai" && state.currentPlayer === "O") {
+        triggerAIMove();
+    }
 }
 
 function resetScoreboard() {
@@ -264,14 +269,18 @@ function handleCellClick(cell) {
 
     // Trigger AI Move if single player mode
     if (state.gameMode === 'ai' && state.isGameActive) {
-        state.isGameActive = false; // Block user clicks during AI evaluation
-        setTimeout(() => {
-            const aiIdx = getBestMove();
-            makeMove(aiIdx, "O");
-            state.isGameActive = true;
-            checkGameStatus();
-        }, 350); // Small cyber delay
+        triggerAIMove();
     }
+}
+
+function triggerAIMove() {
+    state.isGameActive = false; // Block user clicks during AI evaluation
+    setTimeout(() => {
+        const aiIdx = getBestMove();
+        makeMove(aiIdx, "O");
+        state.isGameActive = true;
+        checkGameStatus();
+    }, 350); // Small cyber delay
 }
 
 function makeMove(idx, player) {
