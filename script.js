@@ -193,7 +193,7 @@ function updateSoundButton() {
 
 function startNextRound() {
     state.board.fill("");
-    state.currentPlayer = state.gameMode === "ai" ? "O" : "X";
+    state.currentPlayer = "X";
     state.isGameActive = true;
 
     // Reset UI
@@ -209,11 +209,6 @@ function startNextRound() {
 
     resultScreen.classList.add('hidden');
     updateTurnIndicator();
-
-    // Trigger AI first move if starting as O in AI mode
-    if (state.gameMode === "ai" && state.currentPlayer === "O") {
-        triggerAIMove();
-    }
 }
 
 function resetScoreboard() {
