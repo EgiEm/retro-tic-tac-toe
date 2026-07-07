@@ -384,6 +384,12 @@ function checkWinner(board) {
 // MINIMAX UNBEATABLE AI ALGORITHM
 // ============================================================
 function getBestMove() {
+    // If board is completely empty, pick a random cell to keep the game openings varied
+    const isEmpty = state.board.every(cell => cell === "");
+    if (isEmpty) {
+        return Math.floor(Math.random() * 9);
+    }
+
     let bestScore = -Infinity;
     let move = null;
 
